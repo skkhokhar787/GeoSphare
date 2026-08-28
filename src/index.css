@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Color palette (Material 3 dark-inspired) ─────────────────── */
+  --color-primary: #adc6ff;
+  --color-secondary: #4edea3;
+  --color-tertiary: #efb8c8;
+
+  --color-on-surface: #e4e2ec;
+  --color-on-surface-variant: #c4c6d0;
+  --color-text-muted: #8d93a8;
+
+  --color-surface-variant: #1c2030;
+  --color-surface-glass: rgb(255 255 255 / 0.04);
+  --color-border-glass: rgb(255 255 255 / 0.08);
+  --color-bg-deep: #070a14;
+
+  --color-card: rgb(255 255 255 / 0.03);
+  --color-card-border: rgb(255 255 255 / 0.08);
+  --color-hover-subtle: rgb(255 255 255 / 0.04);
+
+  /* ── Spacing tokens ───────────────────────────────────────────── */
+  --spacing-gutter: 1.5rem;
+  --spacing-margin-safe: clamp(1rem, 5vw, 4rem);
+
+  /* ── Layout tokens ────────────────────────────────────────────── */
+  --container-container-max: 80rem;
+
+  /* ── Font families ────────────────────────────────────────────── */
+  --font-display-lg: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-headline-md: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-body-base: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-label-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* ── Font sizes (with line-heights) ───────────────────────────── */
+  --text-display-lg: 4.5rem;
+  --text-display-lg--line-height: 1.05;
+  --text-headline-md: 1.5rem;
+  --text-headline-md--line-height: 1.33;
+  --text-body-base: 1rem;
+  --text-body-base--line-height: 1.5;
+  --text-label-mono: 0.75rem;
+  --text-label-mono--line-height: 1.25;
+}
+
+/* ── Light theme overrides ─────────────────────────────────────── */
+.light {
+  --color-primary: #4a72c4;
+  --color-secondary: #2d9a6a;
+  --color-tertiary: #c0547a;
+
+  --color-on-surface: #1a1a2e;
+  --color-on-surface-variant: #4a4a5e;
+  --color-text-muted: #7c7f96;
+
+  --color-surface-variant: #e8eaf2;
+  --color-surface-glass: rgb(0 0 0 / 0.03);
+  --color-border-glass: rgb(0 0 0 / 0.07);
+  --color-bg-deep: #f5f6fa;
+
+  --color-card: rgb(255 255 255 / 0.7);
+  --color-card-border: rgb(0 0 0 / 0.06);
+  --color-hover-subtle: rgb(0 0 0 / 0.03);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-deep);
+    color: var(--color-on-surface);
+    font-family: var(--font-body-base);
+    transition: background-color 0.3s, color 0.3s;
+  }
+}
+
+/* Unlayered so it wins over the Google Fonts stylesheet defaults */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  line-height: 1;
+  display: inline-block;
+}
