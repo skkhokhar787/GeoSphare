@@ -1,82 +1,139 @@
-import React from 'react';
-import { useCountries } from '../hooks/useCountries';
-import Card from '../components/Card';
-import { Globe } from 'lucide-react';
+import React from "react";
+import { Globe } from "lucide-react";
+
+import Card from "../components/Card";
+import { useAllCountriesQuery } from "../hooks/useCountryQueries";
+import { getRegions } from "../store/useCountryStore";
 
 const RegionsPage = () => {
-  const { allCountries, regions } = useCountries();
-  const regionsList = regions.filter((r) => r !== 'All');
+  const { data: allCountries = [] } = useAllCountriesQuery();
+
+  const regionsList = getRegions(allCountries).filter(
+    (region) => region !== "All"
+  );
 
   const getRegionStats = (regionName) => {
-    const list = allCountries.filter(
-      (c) => c.region && c.region.toLowerCase() === regionName.toLowerCase()
+    const countries = allCountries.filter(
+      (country) =>
+        country.region?.toLowerCase() === regionName.toLowerCase()
     );
-    const totalPopulation = list.reduce((acc, c) => acc + (c.population || 0), 0);
-    const totalArea = list.reduce((acc, c) => acc + (c.area || 0), 0);
-    return { list, totalPopulation, totalArea };
+
+    const totalPopulation = countries.reduce(
+      (total, country) => total + (country.population || 0),
+      0
+    );
+
+    const totalArea = countries.reduce(
+      (total, country) => total + (country.area || 0),
+      0
+    );
+
+    return {
+      countries,
+      totalPopulation,
+      totalArea,
+    };
   };
 
   return (
-    <div className="max-w-container-max mx-auto px-margin-safe py-8 flex flex-col gap-12">
-      {/* Page Header */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 font-label-mono text-xs text-secondary uppercase tracking-widest">
-          <Globe size={14} /> CONTINENTAL REGIONS
-        </div>
-        <h1 className="font-display-lg text-4xl font-extrabold text-on-surface">World Regions</h1>
-        <p className="text-text-muted text-sm max-w-xl">
-          Browse countries grouped by geographic continents and regional classifications.
-        </p>
-      </div>
+    <div className="mx-auto flex max-w-container-max flex-col gap-12 px-margin-safe py-8">
 
-      {/* Regions Breakdown */}
+      {/* ==================== PAGE HEADER ==================== */}
+      <header className="flex flex-col gap-2">
+        <div className="flex items-center gap-2 font-label-mono text-xs uppercase tracking-widest text-secondary">
+          <Globe size={14} />
+          <span>CONTINENTAL REGIONS</span>
+        </div>
+
+        <h1 className="font-display-lg text-4xl font-extrabold text-on-surface">
+          World Regions
+        </h1>
+
+        <p className="max-w-xl text-sm text-text-muted">
+          Browse countries grouped by geographic continents and regional
+          classifications.
+        </p>
+      </header>
+
+      {/* ==================== REGIONS ==================== */}
       <div className="flex flex-col gap-16">
+
         {regionsList.map((regionName) => {
-          const { list, totalPopulation, totalArea } = getRegionStats(regionName);
+          const {
+            countries,
+            totalPopulation,
+            totalArea,
+          } = getRegionStats(regionName);
 
           return (
-            <div key={regionName} className="flex flex-col gap-6">
-              {/* Region Banner */}
-              <div className="p-6 rounded-2xl border border-border-glass bg-card backdrop-blur-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <section
+              key={regionName}
+              className="flex flex-col gap-6"
+            >
+
+              {/* ==================== REGION HEADER ==================== */}
+              <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-border-glass bg-card p-6 backdrop-blur-lg sm:flex-row sm:items-center">
+
                 <div>
-                  <span className="font-label-mono text-xs text-primary uppercase tracking-widest block mb-1">
+                  <span className="mb-1 block font-label-mono text-xs uppercase tracking-widest text-primary">
                     CONTINENT
                   </span>
-                  <h2 className="font-headline-md text-3xl font-bold text-on-surface flex items-center gap-3">
+
+                  <h2 className="flex items-center gap-3 font-headline-md text-3xl font-bold text-on-surface">
                     {regionName}
-                    <span className="font-label-mono text-xs bg-primary/10 border border-primary/30 text-primary px-3 py-1 rounded-full">
-                      {list.length} {list.length === 1 ? 'Nation' : 'Nations'}
+
+                    <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-label-mono text-xs text-primary">
+                      {countries.length}{" "}
+                      {countries.length === 1 ? "Nation" : "Nations"}
                     </span>
                   </h2>
                 </div>
 
-                <div className="flex items-center gap-6 text-sm font-label-mono">
+                {/* Region Statistics */}
+                <div className="flex items-center gap-6 font-label-mono text-sm">
+
                   <div>
-                    <span className="text-text-muted text-[10px] block uppercase">REGIONAL POPULATION</span>
-                    <span className="text-on-surface font-semibold">{totalPopulation.toLocaleString()}</span>
+                    <span className="block text-[10px] uppercase text-text-muted">
+                      REGIONAL POPULATION
+                    </span>
+
+                    <span className="font-semibold text-on-surface">
+                      {totalPopulation.toLocaleString()}
+                    </span>
                   </div>
+
                   <div className="border-l border-border-glass pl-6">
-                    <span className="text-text-muted text-[10px] block uppercase">TOTAL LAND AREA</span>
-                    <span className="text-on-surface font-semibold">{totalArea.toLocaleString()} km²</span>
+                    <span className="block text-[10px] uppercase text-text-muted">
+                      TOTAL LAND AREA
+                    </span>
+
+                    <span className="font-semibold text-on-surface">
+                      {totalArea.toLocaleString()} km²
+                    </span>
                   </div>
+
                 </div>
               </div>
 
-              {/* Region Cards Grid */}
-              {list.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
-                  {list.map((country) => (
-                    <Card key={country.alpha2Code} country={country} />
+              {/* ==================== COUNTRY CARDS ==================== */}
+              {countries.length > 0 ? (
+                <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {countries.map((country) => (
+                    <Card
+                      key={country.alpha2Code || country.alpha3Code}
+                      country={country}
+                    />
                   ))}
                 </div>
               ) : (
-                <div className="p-8 text-center text-text-muted border border-border-glass rounded-xl bg-card">
+                <div className="rounded-xl border border-border-glass bg-card p-8 text-center text-text-muted">
                   No countries indexed in {regionName} region yet.
                 </div>
               )}
-            </div>
+            </section>
           );
         })}
+
       </div>
     </div>
   );
